@@ -20,7 +20,7 @@ jobs:
 
 | Check | Rule |
 |---|---|
-| Secrets | gitleaks 8.30.1 with its default rules, configured by `guard/gitleaks.toml`. A `.gitleaks.toml` in the calling repository is ignored, so it cannot disable the default rules. |
+| Secrets | gitleaks 8.30.1 with its default rules, configured by `guard/gitleaks.toml`. A `.gitleaks.toml` in the calling repository is ignored, so it cannot disable the default rules, and inline `gitleaks:allow` comments are ignored. |
 | Files | `guard/check_files.py` rejects raw data, CAD, office document and credential file types, and any file over 50 MB. |
 
 ## Required check
