@@ -8,13 +8,15 @@ Add this file as `.github/workflows/repo-guard.yml` in the calling repository.
 
 ```yaml
 name: repo-guard
-on: [push, pull_request]
+on: push
 permissions:
   contents: read
 jobs:
   guard:
     uses: The-General-Data-Company/.github/.github/workflows/repo-guard.yml@main
 ```
+
+The caller runs on push only. Every pull request commit is a push to a branch of the same repository, so it is checked once, and private repositories spend no second run per commit.
 
 ## Checks
 
@@ -29,7 +31,7 @@ The job must be made a required status check (named `guard / guard`) in the bran
 
 ## Reviewing exceptions
 
-Changes to `.github/guard-allow.txt`, `.gitleaks*` and `.gitleaksignore` weaken the guard. They need CODEOWNERS review.
+Changes to `.github/guard-allow.txt` weaken the guard and need CODEOWNERS review. A `.gitleaks.toml`, a `.gitleaksignore` and inline `gitleaks:allow` comments in the calling repository have no effect; false positives are allowlisted centrally in `guard/gitleaks.toml`. Merge commits are checked against their first parent, so content added only while resolving a merge is checked as well.
 
 ## Allowlist
 

@@ -38,7 +38,7 @@ def changed_files(rev_range):
     history would still carry it. The empty tree as base lists all history up to the target commit.
     """
     # -z keeps non-ASCII names unquoted; --no-renames reports a renamed file as added so it cannot slip past the filter
-    out = git("log", "--no-renames", "--diff-filter=AM", "--raw", "-z", "--no-abbrev", "--format=", rev_range)
+    out = git("log", "--no-renames", "--diff-filter=AMT", "--diff-merges=first-parent", "--raw", "-z", "--no-abbrev", "--format=", rev_range)
     tokens = out.split("\0")
     added = {}  # (path, blob) -> None, in first-seen order
     for meta, path in zip(tokens[0::2], tokens[1::2]):

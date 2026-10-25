@@ -170,6 +170,29 @@ class ChangedFiles(unittest.TestCase):
         found = check_files.problems(check_files.changed_files("HEAD~2..HEAD"), allow=[])
         self.assertEqual(len(found), 1)
 
+    def test_file_added_only_in_a_merge_commit_is_reported(self):
+        Path("keep.txt").write_text("x")
+        self.commit("first")
+        self.git("checkout", "-q", "-b", "side")
+        Path("side.txt").write_text("s")
+        self.commit("side")
+        self.git("checkout", "-q", "-")
+        Path("main.txt").write_text("m")
+        self.commit("main")
+        self.git("merge", "-q", "--no-ff", "--no-commit", "side")
+        Path("evil.csv").write_text("a,b")
+        self.commit("merge")
+        self.assertIn("evil.csv", self.names("HEAD~2..HEAD"))
+
+    def test_symlink_replaced_by_a_file_is_reported(self):
+        os.symlink("keep.txt", "legacy.csv")
+        Path("keep.txt").write_text("x")
+        self.commit("first")
+        os.remove("legacy.csv")
+        Path("legacy.csv").write_text("a,b")
+        self.commit("second")
+        self.assertEqual(self.names("HEAD~1..HEAD"), ["legacy.csv"])
+
     def test_git_error_fails_closed_and_prints_the_message(self):
         Path("keep.txt").write_text("x")
         self.commit("first")
