@@ -21,6 +21,32 @@ class Check(unittest.TestCase):
     def test_ordinary_code_passes(self):
         self.assertEqual(check_files.problems([("src/app.py", 2000), ("README.md", 900)], allow=[]), [])
 
+    def test_every_data_and_document_extension_fails(self):
+        extensions = (".csv .tsv .parquet .xlsx .xls .zip .7z .tar .tgz .gz .sql .dump .sqlite .db .pem .key .p8 .p12 .pfx"
+                      " .dwg .dxf .step .stp .pdf .doc .docx .pptx .xlsm .xlsb .ods .jsonl .ndjson .pkl .npy .h5 .feather"
+                      " .avro .mdb .bak").split()
+        for extension in extensions:
+            with self.subTest(extension=extension):
+                self.assertTrue(check_files.problems([(f"data/export{extension}", 10)], allow=[]))
+
+    def test_matching_ignores_case(self):
+        for path in ("DATA.CSV", "exports/Report.PDF", "cad/Part.StEp"):
+            with self.subTest(path=path):
+                self.assertTrue(check_files.problems([(path, 10)], allow=[]))
+
+    def test_plain_json_passes(self):
+        self.assertEqual(check_files.problems([("package.json", 300), ("tests/fixtures/sample.json", 900)], allow=[]), [])
+
+    def test_env_templates_pass(self):
+        for path in (".env.example", ".env.sample", ".env.template", "app/.env.example"):
+            with self.subTest(path=path):
+                self.assertEqual(check_files.problems([(path, 10)], allow=[]), [])
+
+    def test_env_files_fail(self):
+        for path in (".env", ".env.local", ".env.production", ".envrc", "config/.env", "prod.env", ".ENV"):
+            with self.subTest(path=path):
+                self.assertTrue(check_files.problems([(path, 10)], allow=[]))
+
 
 class Allowlist(unittest.TestCase):
     def read(self, text):

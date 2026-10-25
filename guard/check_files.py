@@ -7,7 +7,10 @@ import sys
 
 MAX_BYTES = 50 * 1024 * 1024
 BLOCKED = (".csv", ".tsv", ".parquet", ".xlsx", ".xls", ".zip", ".7z", ".tar", ".tgz", ".gz", ".sql", ".dump",
-           ".sqlite", ".db", ".pem", ".key", ".p8", ".p12", ".pfx", ".env")
+           ".sqlite", ".db", ".pem", ".key", ".p8", ".p12", ".pfx", ".env",
+           ".dwg", ".dxf", ".step", ".stp", ".pdf", ".doc", ".docx", ".pptx", ".xlsm", ".xlsb", ".ods",
+           ".jsonl", ".ndjson", ".pkl", ".npy", ".h5", ".feather", ".avro", ".mdb", ".bak")
+ENV_TEMPLATES = (".env.example", ".env.sample", ".env.template")
 
 
 def problems(files, allow):
@@ -17,7 +20,7 @@ def problems(files, allow):
             found[f"{path}: {size // (1024 * 1024)} MB is over the 50 MB limit"] = None
             continue
         name = os.path.basename(path).lower()
-        blocked = name.endswith(BLOCKED) or name.startswith(".env")
+        blocked = name.endswith(BLOCKED) or (name.startswith(".env") and name not in ENV_TEMPLATES)
         if blocked and not any(fnmatch.fnmatch(path, pattern) for pattern in allow):
             found[f"{path}: data or credential file type is not allowed here (allowlist: .github/guard-allow.txt)"] = None
     return list(found)
