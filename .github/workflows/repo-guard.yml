@@ -24,13 +24,18 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
           BEFORE: ${{ github.event.before }}
           SHA: ${{ github.sha }}
+          REF: ${{ github.ref }}
+          DEFAULT: ${{ github.event.repository.default_branch }}
         run: |
           if [ "$EVENT" = "pull_request" ]; then
             range="origin/$BASE_REF...HEAD"
           elif [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
             range="$BEFORE..$SHA"
+          elif [ -n "$DEFAULT" ] && [ "$REF" != "refs/heads/$DEFAULT" ] && git rev-parse -q --verify "origin/$DEFAULT^{commit}" >/dev/null; then
+            # New branch or tag, or a force push on a branch other than the default: the default branch was checked when it was pushed.
+            range="origin/$DEFAULT..$SHA"
           else
-            # First push, new branch or tag, or a force push that dropped the old commit: check all history up to the pushed commit.
+            # First push to the default branch, or a force push on it that dropped the old commit: check all history up to the pushed commit.
             range="$(git hash-object -t tree /dev/null)..$SHA"
           fi
           echo "range=$range" >> "$GITHUB_OUTPUT"

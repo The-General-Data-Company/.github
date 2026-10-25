@@ -1,6 +1,6 @@
 # Repository guard
 
-A reusable workflow that blocks secrets and raw data files in the repositories of The General Data Company. It checks every commit of a push or pull request, including files that a later commit deletes.
+A reusable workflow that blocks secrets and raw data files in the repositories of The General Data Company. It checks every commit of a push or pull request, including files that a later commit deletes. A new branch or tag is checked against the default branch; the first push to the default branch is checked against its full history.
 
 ## Usage
 
