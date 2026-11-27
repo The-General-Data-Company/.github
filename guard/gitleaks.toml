@@ -1,2 +1,8 @@
 [extend]
 useDefault = true
+
+# The SPDX license list that FreeCAD ships with its Addon Manager. One license reference is a public URL whose
+# query parameter reads as a key. The file is upstream open source, not a secret.
+[[allowlists]]
+description = "SPDX license list in the FreeCAD source"
+paths = ['''^freecad/src/Mod/AddonManager/Resources/licenses/spdx\.json$''']
