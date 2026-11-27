@@ -6,3 +6,9 @@ useDefault = true
 [[allowlists]]
 description = "SPDX license list in the FreeCAD source"
 paths = ['''^freecad/src/Mod/AddonManager/Resources/licenses/spdx\.json$''']
+
+# The vtk.js bundle in the CadQuery documentation. Its minified code reads the modifier keys of a keyboard event
+# (controlKey, shiftKey), which the rule generic-api-key reads as a key. The file is upstream open source, not a secret.
+[[allowlists]]
+description = "vtk.js bundle in the CadQuery documentation"
+paths = ['''^cadquery/doc/_static/vtk\.js$''']
